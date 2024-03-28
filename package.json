@@ -44,11 +44,11 @@
   },
   "dependencies": {
     "d3": "7.8.0",
-    "vue": "3.0.0"
+    "vue": "3.2.25"
   },
   "peerDependencies": {
     "d3": "7.8.0",
-    "vue": "3.0.0"
+    "vue": "3.2.25"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.3",

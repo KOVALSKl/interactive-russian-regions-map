@@ -1,77 +1,23 @@
-import { openBlock as v, createElementBlock as k, createElementVNode as I, resolveComponent as g, createBlock as b, withCtx as p, createVNode as m, createTextVNode as x, toDisplayString as C, ref as l, computed as F, onMounted as L, Fragment as O, renderList as q, renderSlot as H } from "vue";
+import { openBlock as d, createElementBlock as v, createElementVNode as y, computed as E, ref as l, watch as M, onMounted as O, Fragment as S, renderList as q, createBlock as A, renderSlot as F, unref as L } from "vue";
 import * as r from "d3";
-const G = { class: "map-region" }, J = ["d"], K = {
-  __name: "MapRegion",
-  props: ["d", "data", "onclick"],
-  setup(a) {
+const V = { class: "map-region" }, G = ["d"], H = {
+  props: ["d", "data"],
+  emits: ["regionClicked"],
+  setup(a, { emit: g }) {
     const e = a;
-    return (i, c) => (v(), k("g", G, [
-      I("path", {
+    return (x, c) => (d(), v("g", V, [
+      y("path", {
         class: "map-region-path",
         d: e.d,
-        onClick: c[0] || (c[0] = (o) => a.onclick(o, a.data))
-      }, null, 8, J)
+        onClick: c[0] || (c[0] = (s) => g("regionClicked", { event: s, data: a.data }))
+      }, null, 8, G)
     ]));
   }
-}, Z = {
-  __name: "RegionInfo",
-  props: ["regionData"],
-  emits: ["next", "previous"],
-  setup(a) {
-    return (e, i) => {
-      const c = g("v-card-title"), o = g("v-card-text"), h = g("v-spacer"), _ = g("v-btn"), d = g("v-card-actions"), u = g("v-card");
-      return v(), b(u, {
-        elevation: "3",
-        id: "region-info-card"
-      }, {
-        default: p(() => [
-          m(c, { class: "region-title" }, {
-            default: p(() => [
-              x(C(a.regionData.properties.NAME_1), 1)
-            ]),
-            _: 1
-          }),
-          m(o, { class: "region-info" }, {
-            default: p(() => [
-              x(C(a.regionData.properties), 1)
-            ]),
-            _: 1
-          }),
-          m(d, null, {
-            default: p(() => [
-              m(h),
-              m(_, {
-                variant: "text",
-                onClick: i[0] || (i[0] = (f) => e.$emit("next"))
-              }, {
-                default: p(() => [
-                  x(" previous ")
-                ]),
-                _: 1
-              }),
-              m(_, {
-                variant: "text",
-                onClick: i[1] || (i[1] = (f) => e.$emit("previous"))
-              }, {
-                default: p(() => [
-                  x(" next ")
-                ]),
-                _: 1
-              })
-            ]),
-            _: 1
-          })
-        ]),
-        _: 1
-      });
-    };
-  }
-}, Q = { class: "map-container w-100" }, U = ["width", "height", "transform", "viewBox"], W = { id: "regions-container" }, X = /* @__PURE__ */ I("path", {
+}, J = { class: "map-container w-100" }, K = ["width", "height", "transform", "viewBox"], Q = { id: "regions-container" }, U = /* @__PURE__ */ y("path", {
   fill: "none",
   stroke: "white",
   "stroke-linejoin": "round"
-}, null, -1), N = 1500, ee = {
-  __name: "RegionsMap",
+}, null, -1), X = {
   props: {
     width: {
       type: Number,
@@ -87,86 +33,108 @@ const G = { class: "map-region" }, J = ["d"], K = {
     },
     regionsIndexes: {
       type: Object,
-      default: {}
+      default: null
+    },
+    mapProjection: {
+      type: Object,
+      default: null
+    },
+    animationDurationTime: {
+      type: Number,
+      default: 1500
     }
   },
-  setup(a) {
-    const e = a, i = e.regions.features.length, c = r.geoTransverseMercator().fitSize([e.width, e.height], e.regions), o = l(0), h = l(r.geoPath().projection(c)), _ = l(null), d = l(null), u = l(null), f = l(null), R = l(null), y = F(() => e.regions.features[o.value]);
-    function D(t) {
-      t >= 0 && t < i && (o.value = t);
+  emits: ["nextRegion", "previousRegion"],
+  setup(a, { emit: g }) {
+    const e = a, x = e.regions.features.length;
+    let c = [], s = /* @__PURE__ */ new Map();
+    const j = E(() => e.mapProjection ?? r.geoTransverseMercator().fitSize([e.width, e.height], e.regions).rotate([-90, 0]).center([-20, -20])), i = l(0), _ = l(r.geoPath().projection(j.value)), z = l(null), p = l(null), m = l(null), k = l(null);
+    l(null);
+    const h = E(() => e.regions.features[i.value]);
+    M(i, (t, o) => {
+      console.log(`index was changed ${t}`), h.value = e.regions.features[t];
+    }), M(h, (t, o) => {
+      var n, u;
+      (n = s.get(o.properties.id)) == null || n.style.setProperty("fill", null), (u = s.get(t.properties.id)) == null || u.style.setProperty("fill", "red");
+    });
+    function R(t) {
+      t >= 0 && t < x && (i.value = t, console.log(`value updated: ${i.value}`));
     }
-    function T(t) {
-      for (let n = 0; n < i; n++)
-        if (e.regions[n].properties.id === t.properties.id)
-          return n;
+    function b(t) {
+      for (let o = 0; o < x; o++)
+        if (e.regions[o].properties.id === t.properties.id)
+          return o;
     }
-    function B(t) {
-      let n = t.properties.id;
-      return e.regionsIndexes[n].index;
+    function N(t) {
+      let o = t.properties.id;
+      return e.regionsIndexes[o].index;
     }
-    function P() {
-      o.value += 1, o.value === i && (o.value = 0), M();
+    function $() {
+      console.log("clicked next"), R(++i.value), console.log(i.value), w(), g("nextRegion");
     }
-    function j() {
-      o.value -= 1, o.value < 0 && (o.value = i - 1), M();
+    function B() {
+      console.log("clicked previous"), R(--i.value), console.log(i.value), w(), g("previousRegion");
     }
-    function M() {
-      let t = y.value.properties.id;
-      document.getElementById(t).lastChild.dispatchEvent(new MouseEvent("click", void 0));
+    function w() {
+      let t = h.value.properties.id;
+      s.get(t).dispatchEvent(new PointerEvent("click", void 0));
     }
-    function A(t) {
-      const { transform: n } = t;
-      f.value.attr("transform", n), f.value.attr("stroke-width", 1 / n.k);
+    function C(t) {
+      const { transform: o } = t;
+      k.value.attr("transform", o), k.value.attr("stroke-width", 1 / o.k);
     }
-    function S() {
-      u.value.transition().duration(N).call(
-        d.value.transform,
+    function D() {
+      m.value.transition().duration(e.animationDurationTime).call(
+        p.value.transform,
         r.zoomIdentity,
-        r.zoomTransform(u.value.node()).invert([e.width / 2, e.height / 2])
+        r.zoomTransform(m.value.node()).invert([e.width / 2, e.height / 2])
       );
     }
-    function V(t, n) {
-      const [[s, E], [$, z]] = h.value.bounds(n);
-      t.stopPropagation(), R.value.transition().style("fill", null), r.select(t.currentTarget).transition().style("fill", "red");
-      let w;
-      e.regionsIndexes ? w = B(n) : w = T(n), D(w), u.value.transition().duration(N).call(
-        d.value.transform,
-        r.zoomIdentity.translate(e.width / 2, e.height / 2).scale(Math.min(8, 0.9 / Math.max(($ - s) / e.width, (z - E) / e.height))).translate(-(s + $) / 2, -(E + z) / 2)
+    function T({ event: t, data: o }) {
+      console.log(t);
+      const [[n, u], [I, P]] = _.value.bounds(o);
+      t.stopPropagation();
+      let f;
+      console.log(o), e.regionsIndexes ? f = N(o) : f = b(o), console.log(f), R(f), m.value.transition().duration(e.animationDurationTime).call(
+        p.value.transform,
+        r.zoomIdentity.translate(e.width / 2, e.height / 2).scale(Math.min(8, 0.9 / Math.max((I - n) / e.width, (P - u) / e.height))).translate(-(n + I) / 2, -(u + P) / 2)
       );
     }
-    return L(() => {
-      d.value = r.zoom().scaleExtent([1, 8]).on("zoom", A), u.value = r.select("svg").on("click", S).call(d.value), R.value = r.selectAll("path"), f.value = r.select("#regions-container");
-    }), (t, n) => (v(), k("div", Q, [
-      (v(), k("svg", {
+    return O(() => {
+      p.value = r.zoom().scaleExtent([1, 8]).on("zoom", C), m.value = r.select("svg").on("click", D).call(p.value), c = document.querySelectorAll("path.map-region-path").values();
+      for (let t of c)
+        s.set(t.parentElement.id, t);
+      k.value = r.select("#regions-container"), w();
+    }), (t, o) => (d(), v("div", J, [
+      (d(), v("svg", {
         id: "map",
         width: e.width,
         height: e.height,
-        transform: _.value,
+        transform: z.value,
         viewBox: [0, 0, e.width, e.height]
       }, [
-        I("g", W, [
-          (v(!0), k(O, null, q(a.regions.features, (s) => (v(), b(K, {
-            key: s.properties.NAME_1,
-            id: s.properties.id,
+        y("g", Q, [
+          (d(!0), v(S, null, q(a.regions.features, (n) => (d(), A(H, {
+            key: n.properties.NAME_1,
+            id: n.properties.id,
             ref_for: !0,
             ref: "regionsRef",
-            data: s,
-            d: h.value(s),
-            onclick: V
+            data: n,
+            d: _.value(n),
+            onRegionClicked: T
           }, null, 8, ["id", "data", "d"]))), 128)),
-          X
+          U
         ])
-      ], 8, U)),
-      H(t.$slots, "default", {
-        regionData: y.value,
-        onNext: P,
-        onPrevious: j
+      ], 8, K)),
+      F(t.$slots, "default", {
+        regionData: L(h),
+        onNextRegion: $,
+        onPreviousRegion: B
       })
     ]));
   }
 };
 export {
-  K as MapRegion,
-  Z as RegionInfoCard,
-  ee as RegionsMap
+  H as MapRegion,
+  X as RegionsMap
 };
