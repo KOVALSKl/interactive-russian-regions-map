@@ -181,7 +181,6 @@
             :width="props.width"
             :height="props.height"
             :transform="transform"
-            :viewBox="[0,0,props.width, props.height]"
     >
       <g id="regions-container">
         <map-region
