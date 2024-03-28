@@ -1,6 +1,6 @@
 {
   "name": "interactive-regions-map",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "private": false,
   "type": "module",
   "repository": {
@@ -43,12 +43,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "d3": "^7.8.0",
-    "vue": "^3.0.0"
+    "d3": "7.8.0",
+    "vue": "3.0.0"
   },
   "peerDependencies": {
-    "d3": "^7.8.0",
-    "vue": "^3.0.0"
+    "d3": "7.8.0",
+    "vue": "3.0.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.3",
