@@ -1,10 +1,11 @@
 <script setup>
     import {computed} from "vue"
     import RegionsMap from "@/components/RegionsMap/RegionsMap.vue";
-    import RegionInfo from "@/components/Cards/RegionInfo/RegionInfo.vue"
+    import MapProvider from "@/providers/MapProvider/MapProvider.vue";
 
     import regionsJSON from "/src/assets/map.json"
     import regionsIndexesJSON from "/src/assets/indexed_map.json"
+    import {he} from "vuetify/locale";
 
     const regions = computed(() => regionsJSON)
     const regionsIndexes = computed(() => regionsIndexesJSON)
@@ -19,19 +20,16 @@
             <h2>Interactive Map</h2>
         </header>
         <main>
-            <regions-map
-                    :width="width"
-                    :height="height"
-                    :regions="regions"
-                    :regions-indexes="regionsIndexes"
-            >
-                <template #default="props">
-                    <region-info
-                            v-bind="props"
-                    >
-                    </region-info>
-                </template>
-            </regions-map>
+          <map-provider
+              :map-data="regions"
+              :map-data-indexes="regionsIndexes"
+              :width="width"
+              :height="height"
+          >
+            <template v-slot="props">
+              <regions-map v-bind="props"/>
+            </template>
+          </map-provider>
         </main>
         <footer>
             Map.json taken from <a href="https://gadm.org/download_country.html">GADM</a> &#128151;
