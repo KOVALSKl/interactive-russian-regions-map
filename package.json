@@ -1,6 +1,6 @@
 {
   "name": "interactive-regions-map",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "private": false,
   "type": "module",
   "repository": {
@@ -22,7 +22,8 @@
   ],
   "files": [
     "dist",
-    "src/components"
+    "src/components",
+    "src/providers"
   ],
   "main": "./dist/interactive-regions-map.umd.cjs",
   "module": "./dist/interactive-regions-map.js",

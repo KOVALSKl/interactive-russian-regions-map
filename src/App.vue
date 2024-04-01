@@ -26,7 +26,7 @@
               :width="width"
               :height="height"
           >
-            <template v-slot="props">
+            <template #map="props">
               <regions-map v-bind="props"/>
             </template>
           </map-provider>

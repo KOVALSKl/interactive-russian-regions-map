@@ -183,13 +183,15 @@
 <template>
   <div class="map-provider-container">
     <slot
-        :width="width"
-        :height="height"
-        :map-data="mapData"
-        :path="path"
-        @region-clicked="clicked"
+            name="map"
+          :width="width"
+          :height="height"
+          :map-data="mapData"
+          :path="path"
+          @region-clicked="clicked"
     >
     </slot>
+    <slot></slot>
   </div>
 </template>
 
