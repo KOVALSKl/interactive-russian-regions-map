@@ -1,5 +1,4 @@
 <script setup>
-  import {inject} from "vue";
 
   // Components
   import MapRegion from "@/components/MapRegion/MapRegion.vue";
@@ -40,7 +39,6 @@
                 v-for="feature in mapData.features"
                 :key="feature.properties.NAME_1"
                 :id="feature.properties.id"
-                ref="regionsRef"
                 :data="feature"
                 :d="path(feature)"
                 @region-clicked="(event) => emits('regionClicked', event)"

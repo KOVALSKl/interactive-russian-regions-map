@@ -74,9 +74,6 @@
   const mapBlueprintElement = ref(null);
 
   // WATCHERS
-  watch(currentRegionIndex, (newValue, oldValue) => {
-    currentRegion.value = props.mapData.features[newValue]
-  })
 
   watch(currentRegion, (newRegion, oldRegion) => {
     mapComponentTags.get(oldRegion.properties.id)?.style.setProperty("fill", null)
@@ -191,16 +188,24 @@
           @region-clicked="clicked"
     >
     </slot>
-    <slot></slot>
+    <slot
+            :current-region="currentRegion"
+            @next-region="nextRegion"
+            @previous-region="previousRegion"
+    ></slot>
   </div>
 </template>
 
 <style scoped lang="scss">
   .map-provider-container {
     & {
-      display: flex;
-      justify-content: center;
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      /*justify-content: center;*/
       align-items: center;
+      column-gap: 20px;
+
+      width: 100%;
     }
   }
 </style>
