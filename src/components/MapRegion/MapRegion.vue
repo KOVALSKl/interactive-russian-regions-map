@@ -1,8 +1,5 @@
 <template>
   <g class="map-region">
-    <title class="map-region-title">
-      {{data.properties.NAME_1}}
-    </title>
     <slot
             name="map-region-component"
             :d="mainProps.d"
