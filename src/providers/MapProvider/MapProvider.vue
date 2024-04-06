@@ -139,11 +139,11 @@
     const [[x0, y0], [x1, y1]] = path.value.bounds(data);
     event.stopPropagation();
 
-    console.log(event, data)
+    console.log(x0, y0, x1, y1)
 
     let regionIndex;
 
-    if(props.mapDataIndexes)
+    if (props.mapDataIndexes)
       regionIndex = getRegionIndex(data)
     else
       regionIndex = findRegionIndex(data)
@@ -172,6 +172,7 @@
       mapComponentTags.set(tag.parentElement.id, tag)
     }
 
+    mapComponentTags.get(currentRegion.value.properties.id)?.style.setProperty("fill", props.color)
     invokeRegionClick();
   })
 
@@ -201,7 +202,6 @@
     & {
       display: grid;
       grid-template-columns: 1fr 400px;
-      /*justify-content: center;*/
       align-items: center;
       column-gap: 20px;
 

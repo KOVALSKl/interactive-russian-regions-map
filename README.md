@@ -35,23 +35,58 @@ npm i interactive-regions-map@<version>
 
 ### Components
 
-<b>RegionsMap</b> - The Regions Map Component creates an SVG element with a map using the d3.js library. 
+#### MapProvider
+
+The main functionality provider component. It implements the basic functions to 
+calculate svg-component path from region coordinates, zoom etc. using d3.js library.
+
+<b>Props</b>
+
+|         Name          |                                    Description                                    | Default | Required |
+|:---------------------:|:---------------------------------------------------------------------------------:|:-------:|:--------:|
+|         width         |                            Width of main svg component                            |  900px  |    -     |
+|        height         |                           Height of main svg component                            |  900px  |    -     |
+|        mapData        |                            Object with all map regions                            |    -    |    +     |
+|    mapDataIndexes     |                        Object with all map regions indexes                        |  null   |    -     |
+|     mapProjection     | Custom map projection based on d3 mercators objects, using to manipulate your map |  null   |    -     |
+| animationDurationTime |                           Zoom animation duration time                            | 1500ms  |    -     |
+|         color         |                            The color of chosen region                             |   red   |    -     |
+
+<b>Events</b>
+
+|      Name      |                                      Description                                       |                          Effect                          |
+|:--------------:|:--------------------------------------------------------------------------------------:|:--------------------------------------------------------:|
+|   nextRegion   |   This event can be used on custom components to switch between regions sequentially   |   Changed currentRegionIndex to next (end + 1 = start)   |
+| previousRegion | This event can be used on custom components to switch between regions in reverse order | Changed currentRegionIndex to previous (start - 1 = end) |
+| regionClicked  |                        This event occurs after click on region                         |           By default zoom in to clicked region           |
+|   mapClicked   |                          This event occurs after click on map                          |                         nothing                          |
+
+
+<b>Slots</b>
+
+|     Name      |            Props             |         Listeners          |
+|:-------------:|:----------------------------:|:--------------------------:|
+|      map      | width, height, mapData, path | regionClicked, mapClicked  |
+|    default    |        currentRegion         | nextRegion, previousRegion |
+
+<br/>
+
+#### RegionsMap
+
+This component creates an SVG element with a map using the d3.js library. 
 Each region is a Map Region component.
 
 <b>Props</b>:
 
-| Name | Description | Default | Required |
-|:---:|:---:|:---:|:---:|
-| width | Width of main svg component | 900px | - |
-| height | Height of main svg component | 900px | - |
-| regions | JSON object that stores region data | - | + |
-| regionsIndexes | JSON object that stores indexes of region to optimize their search | null | - |
-| mapProjection | Custom map projection based on d3 mercators objects, using to manipulate your map | geoTransverseMercator | - |
-| animationDurationTime | Oh wow, just duration time for your animations on map | 1500 | - |
+|          Name           |                         Description                          | Default  | Required  |
+|:-----------------------:|:------------------------------------------------------------:|:--------:|:---------:|
+|          path           |  Function to calculate path of svg object by it coordinates  |    -     |     +     |
+|          width          |                 Width of main svg component                  |  900px   |     -     |
+|         height          |                 Height of main svg component                 |  900px   |     -     |
+|         mapData         |                 Object with all map regions                  |   null   |     -     |
 
-<br/>
 
-The <b>regions</b> prop has a geo.json structure, so your object should look like this:
+The <b>mapData</b> prop has a geo.json structure, so your object should look like this:
 ```json
 {
   "type": "FeatureCollection",
@@ -94,14 +129,16 @@ The keys of the object are the region id's.
 
 <br/>
 
-<b>MapRegion</b> - The Map Region Component is a nested component that is part of the svg-element map.
+#### MapRegion
+
+This component is a nested component that is part of the svg-element map.
 
 <b>Props</b>:
 
-| Name | Description | Default | Required |
-|:---:|:---:|:---:|:---:|
-| d | Coordinates of the region rendering | - | + |
-| data | Information about the region | - | + |
+|  Name  |             Description             | Default | Required |
+|:------:|:-----------------------------------:|:-------:|:--------:|
+|   d    | Coordinates of the region rendering |    -    |    +     |
+|  data  |    Information about the region     |    -    |    +     |
 
 <br/>
 
@@ -109,37 +146,18 @@ The keys of the object are the region id's.
 
 This component emits events with default handlers that can be disabled or updated
 
-| Name | Description | Effect |
-|:---:|:---:|:---:|
+|     Name      |                    Description                     |                       Effect                        |
+|:-------------:|:--------------------------------------------------:|:---------------------------------------------------:|
 | regionClicked | This event occurs after clicking on Region Element | By default fill region by default color and zoom it |
-
-<br/>
-
-<b>RegionInfo</b> - The Region Info Component is a component that visualize the data of the selected region,
-which is stored inside the Map Region Component using <b>data</b> prop.
-
-<b>Props</b>:
-
-| Name | Description | Default | Required |
-|:---:|:---:|:---:|:---:|
-| regionData | Data which stored inside clicked region | - | + |
-
-<b>Emits</b>:
-
-This component emits events with default handlers that can be updated
-
-| Name | Description | Effect |
-|:---:|:---:|:---:|
-| nextRegion | This event occurs after clicking the "Next" button | Change selected region - forward |
-| previousRegion | This event occurs after clicking the "Previous" button | Change selected region - backward |
  
 <br/>
 <b>Where can I find the JSON file with the coordinates of my country or anything else?</b>
 <br/><br/>
 Here the links:
 
-1. <a href="https://d3js.org/">D3</a> - The library to draw svg elements using JavaScript
-2. <a href="https://gadm.org/download_country.html">GADM</a> - The data of the country's regions and not only them 
+1. [D3](https://d3js.org/) - The library to draw svg elements using JavaScript
+2. [GADM](https://gadm.org/download_country.html) - The data of the country's regions and not only them 
 (use <b>level1</b> from GeoJSON to build a map of the regions, and use map into the package)
-3. <a href="https://geojson.io/#map=2/0/20">geojson</a> - powered by <b>mapbox</b>
+3. [geojson.io](https://geojson.io/#map=2/0/20) - To check your .geojson file and edit
+4. [Vector.rocks](https://vector.rocks/) - To check your .geojson file and edit
 

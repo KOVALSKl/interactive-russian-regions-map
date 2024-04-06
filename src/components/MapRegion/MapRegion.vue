@@ -1,11 +1,15 @@
 <template>
   <g class="map-region">
+    <title class="map-region-title">
+      {{data.properties.NAME_1}}
+    </title>
     <slot
             name="map-region-component"
             :d="mainProps.d"
             @click="(event) => emit('regionClicked', {event, data})"
     >
       <path
+              :id="`path_${data.properties.id}`"
               class="map-region-path"
               :d="mainProps.d"
               @click="(event) => emit('regionClicked', {event, data})"
@@ -26,6 +30,8 @@
       transition: fill ease-in 200ms;
       fill: #444;
       cursor: pointer;
+
+      z-index: 1;
 
       position: relative;
     }

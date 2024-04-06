@@ -1,23 +1,34 @@
-import { openBlock as d, createElementBlock as h, createElementVNode as w, Fragment as N, renderList as $, createBlock as T, computed as I, ref as m, watch as R, onMounted as O, renderSlot as E } from "vue";
-import * as r from "d3";
-const q = { class: "map-region" }, S = ["d"], F = {
+import { openBlock as m, createElementBlock as h, createElementVNode as k, toDisplayString as T, renderSlot as C, Fragment as O, renderList as S, createBlock as q, computed as I, ref as g, watch as A, onMounted as F } from "vue";
+import * as l from "d3";
+const L = { class: "map-region" }, V = { class: "map-region-title" }, G = ["id", "d"], H = {
+  __name: "MapRegion",
   props: ["d", "data"],
   emits: ["regionClicked"],
-  setup(o, { emit: s }) {
-    const e = o;
-    return (l, i) => (d(), h("g", q, [
-      w("path", {
-        class: "map-region-path",
+  setup(o, { emit: d }) {
+    const e = o, r = d;
+    return (c, i) => (m(), h("g", L, [
+      k("title", V, `
+      ` + T(o.data.properties.NAME_1) + `
+    `, 1),
+      C(c.$slots, "map-region-component", {
         d: e.d,
-        onClick: i[0] || (i[0] = (a) => s("regionClicked", { event: a, data: o.data }))
-      }, null, 8, S)
+        onClick: i[0] || (i[0] = (a) => r("regionClicked", { event: a, data: o.data }))
+      }, () => [
+        k("path", {
+          id: `path_${o.data.properties.id}`,
+          class: "map-region-path",
+          d: e.d,
+          onClick: i[1] || (i[1] = (a) => r("regionClicked", { event: a, data: o.data }))
+        }, null, 8, G)
+      ])
     ]));
   }
-}, A = { class: "map-container w-100" }, L = ["width", "height", "viewBox"], V = { id: "regions-container" }, G = /* @__PURE__ */ w("path", {
+}, J = { class: "map-container w-100" }, K = ["width", "height", "viewBox"], Q = { id: "regions-container" }, U = /* @__PURE__ */ k("path", {
   fill: "none",
   stroke: "white",
   "stroke-linejoin": "round"
-}, null, -1), U = {
+}, null, -1), ee = {
+  __name: "RegionsMap",
   props: {
     mapData: {
       type: Object,
@@ -37,36 +48,35 @@ const q = { class: "map-region" }, S = ["d"], F = {
     }
   },
   emits: ["regionClicked"],
-  setup(o, { emit: s }) {
-    const e = o;
-    return (l, i) => (d(), h("div", A, [
-      (d(), h("svg", {
+  setup(o, { emit: d }) {
+    const e = o, r = d;
+    return (c, i) => (m(), h("div", J, [
+      (m(), h("svg", {
         id: "map",
         width: e.width,
         height: e.height,
         viewBox: [0, 0, e.width, e.height]
       }, [
-        w("g", V, [
-          (d(!0), h(N, null, $(o.mapData.features, (a) => (d(), T(F, {
+        k("g", Q, [
+          (m(!0), h(O, null, S(o.mapData.features, (a) => (m(), q(H, {
             key: a.properties.NAME_1,
             id: a.properties.id,
-            ref_for: !0,
-            ref: "regionsRef",
             data: a,
             d: o.path(a),
-            onRegionClicked: i[0] || (i[0] = (c) => s("regionClicked", c))
+            onRegionClicked: i[0] || (i[0] = (u) => r("regionClicked", u))
           }, null, 8, ["id", "data", "d"]))), 128)),
-          G
+          U
         ])
-      ], 8, L))
+      ], 8, K))
     ]));
   }
-}, H = (o, s) => {
+}, W = (o, d) => {
   const e = o.__vccOpts || o;
-  for (const [l, i] of s)
-    e[l] = i;
+  for (const [r, c] of d)
+    e[r] = c;
   return e;
-}, J = { class: "map-provider-container" }, K = {
+}, X = { class: "map-provider-container" }, Y = {
+  __name: "MapProvider",
   props: {
     width: {
       type: Number,
@@ -103,72 +113,81 @@ const q = { class: "map-region" }, S = ["d"], F = {
     "regionClicked",
     "mapClicked"
   ],
-  setup(o, { emit: s }) {
-    const e = o, l = e.mapData.features.length, i = /* @__PURE__ */ new Map(), a = I(() => e.mapProjection ?? r.geoTransverseMercator().fitSize([e.width, e.height], e.mapData).rotate([-90, 0]).center([-20, -20])), c = I(() => e.mapData.features[f.value]), f = m(0), x = m(r.geoPath().projection(a.value)), v = m(
-      r.zoom().scaleExtent([1, 8]).on("zoom", M)
-    ), g = m(null), k = m(null);
-    R(f, (t, n) => {
-      c.value = e.mapData.features[t];
-    }), R(c, (t, n) => {
-      var u, p;
-      (u = i.get(n.properties.id)) == null || u.style.setProperty("fill", null), (p = i.get(t.properties.id)) == null || p.style.setProperty("fill", e.color);
+  setup(o, { emit: d }) {
+    const e = o, r = d, c = e.mapData.features.length, i = /* @__PURE__ */ new Map(), a = I(() => e.mapProjection ?? l.geoTransverseMercator().fitSize([e.width, e.height], e.mapData).rotate([-90, 0]).center([-20, -20])), u = I(() => e.mapData.features[f.value]), f = g(0), E = g(l.geoPath().projection(a.value)), y = g(
+      l.zoom().scaleExtent([1, 8]).on("zoom", N)
+    ), v = g(null), x = g(null);
+    A(u, (t, n) => {
+      var s, p;
+      (s = i.get(n.properties.id)) == null || s.style.setProperty("fill", null), (p = i.get(t.properties.id)) == null || p.style.setProperty("fill", e.color);
     });
-    function b(t) {
-      t >= 0 && t < l && (f.value = t);
+    function R(t) {
+      t >= 0 && t < c && (f.value = t);
     }
-    function C(t) {
-      for (let n = 0; n < l; n++)
+    function M(t) {
+      for (let n = 0; n < c; n++)
         if (e.mapData[n].properties.id === t.properties.id)
           return n;
     }
-    function P(t) {
+    function b(t) {
       let n = t.properties.id;
       return e.mapDataIndexes[n].index;
     }
+    function $() {
+      R(++f.value), w(), r("nextRegion");
+    }
     function j() {
-      let t = c.value.properties.id;
+      R(--f.value), w(), r("previousRegion");
+    }
+    function w() {
+      let t = u.value.properties.id;
       i.get(t).dispatchEvent(new PointerEvent("click", void 0));
     }
-    function M(t) {
+    function N(t) {
       const { transform: n } = t;
-      k.value.attr("transform", n), k.value.attr("stroke-width", 1 / n.k);
+      x.value.attr("transform", n), x.value.attr("stroke-width", 1 / n.k);
     }
     function z() {
-      g.value.transition().duration(e.animationDurationTime).call(
-        v.value.transform,
-        r.zoomIdentity,
-        r.zoomTransform(g.value.node()).invert([e.width / 2, e.height / 2])
+      v.value.transition().duration(e.animationDurationTime).call(
+        y.value.transform,
+        l.zoomIdentity,
+        l.zoomTransform(v.value.node()).invert([e.width / 2, e.height / 2])
       );
     }
     function B({ event: t, data: n }) {
-      const [[u, p], [D, _]] = x.value.bounds(n);
-      t.stopPropagation(), console.log(t, n);
-      let y;
-      e.mapDataIndexes ? y = P(n) : y = C(n), b(y), g.value.transition().duration(e.animationDurationTime).call(
-        v.value.transform,
-        r.zoomIdentity.translate(e.width / 2, e.height / 2).scale(Math.min(8, 0.9 / Math.max((D - u) / e.width, (_ - p) / e.height))).translate(-(u + D) / 2, -(p + _) / 2)
+      const [[s, p], [D, _]] = E.value.bounds(n);
+      t.stopPropagation(), console.log(s, p, D, _);
+      let P;
+      e.mapDataIndexes ? P = b(n) : P = M(n), R(P), v.value.transition().duration(e.animationDurationTime).call(
+        y.value.transform,
+        l.zoomIdentity.translate(e.width / 2, e.height / 2).scale(Math.min(8, 0.9 / Math.max((D - s) / e.width, (_ - p) / e.height))).translate(-(s + D) / 2, -(p + _) / 2)
       );
     }
-    return O(() => {
-      g.value = r.select("svg").on("click", z).call(v.value), k.value = r.select("#regions-container");
+    return F(() => {
+      var n;
+      v.value = l.select("svg").on("click", z).call(y.value), x.value = l.select("#regions-container");
       const t = document.querySelectorAll("path.map-region-path").values();
-      for (let n of t)
-        i.set(n.parentElement.id, n);
-      j();
-    }), (t, n) => (d(), h("div", J, [
-      E(t.$slots, "map", {
+      for (let s of t)
+        i.set(s.parentElement.id, s);
+      (n = i.get(u.value.properties.id)) == null || n.style.setProperty("fill", e.color), w();
+    }), (t, n) => (m(), h("div", X, [
+      C(t.$slots, "map", {
         width: o.width,
         height: o.height,
         mapData: o.mapData,
-        path: x.value,
+        path: E.value,
         onRegionClicked: B
       }, void 0, !0),
-      E(t.$slots, "default", {}, void 0, !0)
+      C(t.$slots, "default", {
+        currentRegion: u.value,
+        onNextRegion: $,
+        onPreviousRegion: j
+      }, void 0, !0)
     ]));
   }
-}, W = /* @__PURE__ */ H(K, [["__scopeId", "data-v-77414b0a"]]);
+}, te = /* @__PURE__ */ W(Y, [["__scopeId", "data-v-aaf3ea3d"]]);
 export {
-  W as MapProvider,
-  F as MapRegion,
-  U as RegionsMap
+  te as MapProvider,
+  H as MapRegion,
+  ee as RegionsMap
 };
