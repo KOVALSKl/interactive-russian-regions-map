@@ -83,8 +83,12 @@
   // METHODS
 
   function setRegionIndex(value) {
-    if (value >= 0 && value < mapDataFeaturesLength) {
-      currentRegionIndex.value = value
+    if(value < 0) {
+      currentRegionIndex.value = mapDataFeaturesLength - 1;
+    } else if (value >= mapDataFeaturesLength) {
+      currentRegionIndex.value = 0;
+    } else {
+      currentRegionIndex.value = value;
     }
   }
 
@@ -138,8 +142,6 @@
   function clicked({event, data}) {
     const [[x0, y0], [x1, y1]] = path.value.bounds(data);
     event.stopPropagation();
-
-    console.log(x0, y0, x1, y1)
 
     let regionIndex;
 
