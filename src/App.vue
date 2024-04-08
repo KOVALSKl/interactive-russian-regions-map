@@ -2,6 +2,7 @@
     import {computed} from "vue"
     import RegionsMap from "@/components/RegionsMap/RegionsMap.vue";
     import MapProvider from "@/providers/MapProvider/MapProvider.vue";
+    import RegionInfoCard from "@/components/Cards/RegionInfoCard.vue"
 
     import regionsJSON from "/src/assets/map.json"
     import regionsIndexesJSON from "/src/assets/indexed_map.json"
@@ -32,15 +33,7 @@
                   <regions-map v-bind="props"/>
               </template>
               <template v-slot="props">
-                  <v-card v-bind="props" class="current-region-data-card" elevation="2">
-                      <v-card-title>{{props.currentRegion.properties.NAME_1}}</v-card-title>
-                      <v-card-text>{{props.currentRegion.properties}}</v-card-text>
-                      <v-card-actions v-bind="props">
-                          <v-spacer/>
-                          <v-btn @click="emits('previousRegion')">Previous</v-btn>
-                          <v-btn @click="emits('nextRegion')">Next</v-btn>
-                      </v-card-actions>
-                  </v-card>
+                  <region-info-card v-bind="props"/>
               </template>
           </map-provider>
         </main>
