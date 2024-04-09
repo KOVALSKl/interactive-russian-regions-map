@@ -37,7 +37,7 @@
       <g id="regions-container">
         <map-region
                 v-for="feature in mapData.features"
-                :key="feature.properties.NAME_1"
+                :key="feature.properties.id"
                 :id="feature.properties.id"
                 :data="feature"
                 :d="path(feature)"
