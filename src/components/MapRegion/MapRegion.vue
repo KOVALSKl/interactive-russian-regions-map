@@ -25,7 +25,6 @@
   .map-region {
     & {
       transition: fill ease-in 200ms;
-      fill: #444;
       cursor: pointer;
 
       z-index: 1;

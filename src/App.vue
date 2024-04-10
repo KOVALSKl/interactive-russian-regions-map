@@ -5,11 +5,13 @@
     import RegionInfoCard from "@/components/Cards/RegionInfoCard.vue"
 
     import regionsJSON from "/src/assets/map.json"
+    import colorSchemaJSON from "/src/assets/colorSchema.json"
     import regionsIndexesJSON from "/src/assets/indexed_map.json"
     import {he} from "vuetify/locale";
 
     const emits = defineEmits(['nextRegion', 'previousRegion'])
 
+    const colorSchema = computed(() => colorSchemaJSON)
     const regions = computed(() => regionsJSON)
     const regionsIndexes = computed(() => regionsIndexesJSON)
 
@@ -28,6 +30,7 @@
               :map-data-indexes="regionsIndexes"
               :width="width"
               :height="height"
+              :regionsColorSchema="colorSchema"
           >
               <template #map="props">
                   <regions-map v-bind="props"/>

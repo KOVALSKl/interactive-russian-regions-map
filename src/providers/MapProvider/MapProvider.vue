@@ -29,7 +29,19 @@
       type: Number,
       default: 1500
     },
-    color: {
+    disableZoomOnClick: {
+      type: Boolean,
+      default: false
+    },
+    regionsColorSchema: {
+      type: Object,
+      default: {},
+    },
+    regionDefaultColor: {
+      type: String,
+      default: "#444"
+    },
+    chosenRegionColor: {
       type: String,
       default: "red"
     }
@@ -71,16 +83,38 @@
           .on("zoom", zoomed)
   )
   const mapElement = ref(null);
+  const colorSchema = ref(props.regionsColorSchema);
   const mapBlueprintElement = ref(null);
 
   // WATCHERS
 
   watch(currentRegion, (newRegion, oldRegion) => {
-    mapComponentTags.get(oldRegion.properties.id)?.style.setProperty("fill", null)
-    mapComponentTags.get(newRegion.properties.id)?.style.setProperty("fill", props.color)
+    console.log(oldRegion.properties.id)
+    console.log(colorSchema)
+    let isOldRegionInSchema = oldRegion.properties.id in colorSchema.value;
+    console.log(isOldRegionInSchema)
+    mapComponentTags.get(oldRegion.properties.id)?.style.setProperty("fill",
+            (isOldRegionInSchema
+                    ? colorSchema.value[oldRegion.properties.id].color
+                    : props.regionDefaultColor
+            )
+    )
+    mapComponentTags.get(newRegion.properties.id)?.style.setProperty("fill", props.chosenRegionColor)
+  })
+
+  watch(colorSchema, (value) => {
+    console.log(colorSchema)
+    fillRegionsBySchema(value)
   })
 
   // METHODS
+
+  function fillRegionsBySchema(schema) {
+    for (let [regionId, regionTag] of mapComponentTags.entries()) {
+      const regionColor = schema[regionId]?.color ?? props.regionDefaultColor
+      regionTag.style.setProperty("fill", regionColor)
+    }
+  }
 
   function setRegionIndex(value) {
     if(value < 0) {
@@ -132,6 +166,8 @@
   }
 
   function reset() {
+    eventBusEmits("mapClicked")
+
     mapElement.value.transition().duration(props.animationDurationTime).call(
         zoom.value.transform,
         d3.zoomIdentity,
@@ -152,6 +188,7 @@
 
     setRegionIndex(regionIndex)
 
+
     mapElement.value.transition().duration(props.animationDurationTime).call(
         zoom.value.transform,
         d3.zoomIdentity
@@ -159,6 +196,8 @@
             .scale(Math.min(8, 0.9 / Math.max((x1 - x0) / props.width, (y1 - y0) / props.height)))
             .translate(-(x0 + x1) / 2, -(y0 + y1) / 2)
     )
+
+    eventBusEmits("regionClicked", {event, data})
   }
 
   onMounted(() => {
@@ -174,7 +213,7 @@
       mapComponentTags.set(tag.parentElement.id, tag)
     }
 
-    mapComponentTags.get(currentRegion.value.properties.id)?.style.setProperty("fill", props.color)
+    fillRegionsBySchema(props.regionsColorSchema)
     invokeRegionClick();
   })
 
