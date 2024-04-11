@@ -1,5 +1,5 @@
 <script setup>
-    import {computed} from "vue"
+    import {computed, ref} from "vue"
     import RegionsMap from "@/components/RegionsMap/RegionsMap.vue";
     import MapProvider from "@/providers/MapProvider/MapProvider.vue";
     import RegionInfoCard from "@/components/Cards/RegionInfoCard.vue"
@@ -7,16 +7,22 @@
     import regionsJSON from "/src/assets/map.json"
     import colorSchemaJSON from "/src/assets/colorSchema.json"
     import regionsIndexesJSON from "/src/assets/indexed_map.json"
-    import {he} from "vuetify/locale";
 
     const emits = defineEmits(['nextRegion', 'previousRegion'])
 
-    const colorSchema = computed(() => colorSchemaJSON)
+    const colorSchema = ref(colorSchemaJSON)
     const regions = computed(() => regionsJSON)
     const regionsIndexes = computed(() => regionsIndexesJSON)
 
     const width = 720
     const height = 720
+
+    function changeColors() {
+        for (let region of Object.values(colorSchema.value)) {
+            region.color = "blue"
+        }
+    }
+
 </script>
 
 <template>
@@ -39,6 +45,9 @@
                   <region-info-card v-bind="props"/>
               </template>
           </map-provider>
+            <v-btn @click="changeColors">
+                change colors
+            </v-btn>
         </main>
         <footer>
             Map.json taken from <a href="https://gadm.org/download_country.html">GADM</a> &#128151;

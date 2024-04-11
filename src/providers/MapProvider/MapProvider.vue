@@ -89,8 +89,6 @@
   // WATCHERS
 
   watch(currentRegion, (newRegion, oldRegion) => {
-    console.log(oldRegion.properties.id)
-    console.log(colorSchema)
     let isOldRegionInSchema = oldRegion.properties.id in colorSchema.value;
     console.log(isOldRegionInSchema)
     mapComponentTags.get(oldRegion.properties.id)?.style.setProperty("fill",
@@ -105,7 +103,7 @@
   watch(colorSchema, (value) => {
     console.log(colorSchema)
     fillRegionsBySchema(value)
-  })
+  }, {deep: true})
 
   // METHODS
 

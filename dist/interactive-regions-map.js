@@ -1,34 +1,29 @@
-import { openBlock as m, createElementBlock as h, createElementVNode as k, toDisplayString as T, renderSlot as C, Fragment as O, renderList as S, createBlock as q, computed as I, ref as g, watch as A, onMounted as F } from "vue";
-import * as l from "d3";
-const L = { class: "map-region" }, V = { class: "map-region-title" }, G = ["id", "d"], H = {
-  __name: "MapRegion",
+import { openBlock as m, createElementBlock as v, renderSlot as D, createElementVNode as I, Fragment as B, renderList as q, createBlock as F, computed as j, ref as g, watch as $, onMounted as L, unref as A } from "vue";
+import * as s from "d3";
+const V = { class: "map-region" }, Z = ["id", "d"], G = {
   props: ["d", "data"],
   emits: ["regionClicked"],
-  setup(o, { emit: d }) {
-    const e = o, r = d;
-    return (c, i) => (m(), h("g", L, [
-      k("title", V, `
-      ` + T(o.data.properties.NAME_1) + `
-    `, 1),
-      C(c.$slots, "map-region-component", {
+  setup(n, { emit: r }) {
+    const e = n;
+    return (l, i) => (m(), v("g", V, [
+      D(l.$slots, "map-region-component", {
         d: e.d,
-        onClick: i[0] || (i[0] = (a) => r("regionClicked", { event: a, data: o.data }))
+        onClick: i[0] || (i[0] = (a) => r("regionClicked", { event: a, data: n.data }))
       }, () => [
-        k("path", {
-          id: `path_${o.data.properties.id}`,
+        I("path", {
+          id: `path_${n.data.properties.id}`,
           class: "map-region-path",
           d: e.d,
-          onClick: i[1] || (i[1] = (a) => r("regionClicked", { event: a, data: o.data }))
-        }, null, 8, G)
+          onClick: i[1] || (i[1] = (a) => r("regionClicked", { event: a, data: n.data }))
+        }, null, 8, Z)
       ])
     ]));
   }
-}, J = { class: "map-container w-100" }, K = ["width", "height", "viewBox"], Q = { id: "regions-container" }, U = /* @__PURE__ */ k("path", {
+}, H = { class: "map-container w-100" }, J = ["width", "height", "viewBox"], K = { id: "regions-container" }, Q = /* @__PURE__ */ I("path", {
   fill: "none",
   stroke: "white",
   "stroke-linejoin": "round"
 }, null, -1), ee = {
-  __name: "RegionsMap",
   props: {
     mapData: {
       type: Object,
@@ -48,35 +43,34 @@ const L = { class: "map-region" }, V = { class: "map-region-title" }, G = ["id",
     }
   },
   emits: ["regionClicked"],
-  setup(o, { emit: d }) {
-    const e = o, r = d;
-    return (c, i) => (m(), h("div", J, [
-      (m(), h("svg", {
+  setup(n, { emit: r }) {
+    const e = n;
+    return (l, i) => (m(), v("div", H, [
+      (m(), v("svg", {
         id: "map",
         width: e.width,
         height: e.height,
         viewBox: [0, 0, e.width, e.height]
       }, [
-        k("g", Q, [
-          (m(!0), h(O, null, S(o.mapData.features, (a) => (m(), q(H, {
-            key: a.properties.NAME_1,
+        I("g", K, [
+          (m(!0), v(B, null, q(n.mapData.features, (a) => (m(), F(G, {
+            key: a.properties.id,
             id: a.properties.id,
             data: a,
-            d: o.path(a),
-            onRegionClicked: i[0] || (i[0] = (u) => r("regionClicked", u))
+            d: n.path(a),
+            onRegionClicked: i[0] || (i[0] = (h) => r("regionClicked", h))
           }, null, 8, ["id", "data", "d"]))), 128)),
-          U
+          Q
         ])
-      ], 8, K))
+      ], 8, J))
     ]));
   }
-}, W = (o, d) => {
-  const e = o.__vccOpts || o;
-  for (const [r, c] of d)
-    e[r] = c;
+}, U = (n, r) => {
+  const e = n.__vccOpts || n;
+  for (const [l, i] of r)
+    e[l] = i;
   return e;
-}, X = { class: "map-provider-container" }, Y = {
-  __name: "MapProvider",
+}, W = { class: "map-provider-container" }, X = {
   props: {
     width: {
       type: Number,
@@ -102,7 +96,19 @@ const L = { class: "map-region" }, V = { class: "map-region-title" }, G = ["id",
       type: Number,
       default: 1500
     },
-    color: {
+    disableZoomOnClick: {
+      type: Boolean,
+      default: !1
+    },
+    regionsColorSchema: {
+      type: Object,
+      default: {}
+    },
+    regionDefaultColor: {
+      type: String,
+      default: "#444"
+    },
+    chosenRegionColor: {
       type: String,
       default: "red"
     }
@@ -113,81 +119,94 @@ const L = { class: "map-region" }, V = { class: "map-region-title" }, G = ["id",
     "regionClicked",
     "mapClicked"
   ],
-  setup(o, { emit: d }) {
-    const e = o, r = d, c = e.mapData.features.length, i = /* @__PURE__ */ new Map(), a = I(() => e.mapProjection ?? l.geoTransverseMercator().fitSize([e.width, e.height], e.mapData).rotate([-90, 0]).center([-20, -20])), u = I(() => e.mapData.features[f.value]), f = g(0), E = g(l.geoPath().projection(a.value)), y = g(
-      l.zoom().scaleExtent([1, 8]).on("zoom", N)
-    ), v = g(null), x = g(null);
-    A(u, (t, n) => {
-      var s, p;
-      (s = i.get(n.properties.id)) == null || s.style.setProperty("fill", null), (p = i.get(t.properties.id)) == null || p.style.setProperty("fill", e.color);
+  setup(n, { emit: r }) {
+    const e = n, l = e.mapData.features.length, i = /* @__PURE__ */ new Map(), a = j(() => e.mapProjection ?? s.geoTransverseMercator().fitSize([e.width, e.height], e.mapData).rotate([-90, 0]).center([-20, -20])), h = j(() => e.mapData.features[p.value]), p = g(0), b = g(s.geoPath().projection(a.value)), y = g(
+      s.zoom().scaleExtent([1, 8]).on("zoom", E)
+    ), k = g(null), f = g(e.regionsColorSchema), C = g(null);
+    $(h, (o, t) => {
+      var d, u;
+      console.log(t.properties.id), console.log(f);
+      let c = t.properties.id in f.value;
+      console.log(c), (d = i.get(t.properties.id)) == null || d.style.setProperty(
+        "fill",
+        c ? f.value[t.properties.id].color : e.regionDefaultColor
+      ), (u = i.get(o.properties.id)) == null || u.style.setProperty("fill", e.chosenRegionColor);
+    }), $(f, (o) => {
+      console.log(f), P(o);
     });
-    function R(t) {
-      t >= 0 && t < c && (f.value = t);
+    function P(o) {
+      var t;
+      for (let [c, d] of i.entries()) {
+        const u = ((t = o[c]) == null ? void 0 : t.color) ?? e.regionDefaultColor;
+        d.style.setProperty("fill", u);
+      }
     }
-    function M(t) {
-      for (let n = 0; n < c; n++)
-        if (e.mapData[n].properties.id === t.properties.id)
-          return n;
+    function x(o) {
+      o < 0 ? p.value = l - 1 : o >= l ? p.value = 0 : p.value = o;
     }
-    function b(t) {
-      let n = t.properties.id;
-      return e.mapDataIndexes[n].index;
+    function z(o) {
+      for (let t = 0; t < l; t++)
+        if (e.mapData[t].properties.id === o.properties.id)
+          return t;
     }
-    function $() {
-      R(++f.value), w(), r("nextRegion");
+    function M(o) {
+      let t = o.properties.id;
+      return e.mapDataIndexes[t].index;
     }
-    function j() {
-      R(--f.value), w(), r("previousRegion");
+    function O() {
+      x(++p.value), w(), r("nextRegion");
+    }
+    function _() {
+      x(--p.value), w(), r("previousRegion");
     }
     function w() {
-      let t = u.value.properties.id;
-      i.get(t).dispatchEvent(new PointerEvent("click", void 0));
+      let o = h.value.properties.id;
+      i.get(o).dispatchEvent(new PointerEvent("click", void 0));
     }
-    function N(t) {
-      const { transform: n } = t;
-      x.value.attr("transform", n), x.value.attr("stroke-width", 1 / n.k);
+    function E(o) {
+      const { transform: t } = o;
+      C.value.attr("transform", t), C.value.attr("stroke-width", 1 / t.k);
     }
-    function z() {
-      v.value.transition().duration(e.animationDurationTime).call(
+    function N() {
+      r("mapClicked"), k.value.transition().duration(e.animationDurationTime).call(
         y.value.transform,
-        l.zoomIdentity,
-        l.zoomTransform(v.value.node()).invert([e.width / 2, e.height / 2])
+        s.zoomIdentity,
+        s.zoomTransform(k.value.node()).invert([e.width / 2, e.height / 2])
       );
     }
-    function B({ event: t, data: n }) {
-      const [[s, p], [D, _]] = E.value.bounds(n);
-      t.stopPropagation(), console.log(s, p, D, _);
-      let P;
-      e.mapDataIndexes ? P = b(n) : P = M(n), R(P), v.value.transition().duration(e.animationDurationTime).call(
+    function T({ event: o, data: t }) {
+      const [[c, d], [u, S]] = b.value.bounds(t);
+      o.stopPropagation();
+      let R;
+      e.mapDataIndexes ? R = M(t) : R = z(t), x(R), k.value.transition().duration(e.animationDurationTime).call(
         y.value.transform,
-        l.zoomIdentity.translate(e.width / 2, e.height / 2).scale(Math.min(8, 0.9 / Math.max((D - s) / e.width, (_ - p) / e.height))).translate(-(s + D) / 2, -(p + _) / 2)
-      );
+        s.zoomIdentity.translate(e.width / 2, e.height / 2).scale(Math.min(8, 0.9 / Math.max((u - c) / e.width, (S - d) / e.height))).translate(-(c + u) / 2, -(d + S) / 2)
+      ), r("regionClicked", { event: o, data: t });
     }
-    return F(() => {
-      var n;
-      v.value = l.select("svg").on("click", z).call(y.value), x.value = l.select("#regions-container");
-      const t = document.querySelectorAll("path.map-region-path").values();
-      for (let s of t)
-        i.set(s.parentElement.id, s);
-      (n = i.get(u.value.properties.id)) == null || n.style.setProperty("fill", e.color), w();
-    }), (t, n) => (m(), h("div", X, [
-      C(t.$slots, "map", {
-        width: o.width,
-        height: o.height,
-        mapData: o.mapData,
-        path: E.value,
-        onRegionClicked: B
+    return L(() => {
+      k.value = s.select("svg").on("click", N).call(y.value), C.value = s.select("#regions-container");
+      const o = document.querySelectorAll("path.map-region-path").values();
+      for (let t of o)
+        i.set(t.parentElement.id, t);
+      P(e.regionsColorSchema), w();
+    }), (o, t) => (m(), v("div", W, [
+      D(o.$slots, "map", {
+        width: n.width,
+        height: n.height,
+        mapData: n.mapData,
+        path: b.value,
+        onRegionClicked: T
       }, void 0, !0),
-      C(t.$slots, "default", {
-        currentRegion: u.value,
-        onNextRegion: $,
-        onPreviousRegion: j
+      D(o.$slots, "default", {
+        currentRegion: A(h),
+        onNextRegion: O,
+        onPreviousRegion: _
       }, void 0, !0)
     ]));
   }
-}, te = /* @__PURE__ */ W(Y, [["__scopeId", "data-v-aaf3ea3d"]]);
+}, te = /* @__PURE__ */ U(X, [["__scopeId", "data-v-c831511b"]]);
 export {
   te as MapProvider,
-  H as MapRegion,
+  G as MapRegion,
   ee as RegionsMap
 };
